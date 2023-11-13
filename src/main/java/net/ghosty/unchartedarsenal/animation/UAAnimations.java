@@ -40,14 +40,8 @@ import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimation
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
-import yesman.epicfight.api.animation.types.AimAnimation;
+import yesman.epicfight.api.animation.types.*;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
-import yesman.epicfight.api.animation.types.DodgeAnimation;
-import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.GuardAnimation;
-import yesman.epicfight.api.animation.types.LongHitAnimation;
-import yesman.epicfight.api.animation.types.MovementAnimation;
-import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.api.utils.LevelUtil;
 import yesman.epicfight.api.utils.TimePairList;
@@ -75,7 +69,7 @@ public class UAAnimations {
     public static StaticAnimation PHARAOH_IDLE_ACTIVE;
     public static MovementAnimation PHARAOH_WALK_ACTIVE;
     public static MovementAnimation PHARAOH_RUN_ACTIVE;
-    public static StaticAnimation PHARAOH_AUTO_1;
+    public static StaticAnimation PHARAOH_AUTO1;
 
     @SubscribeEvent
     public static void registerAnimations(AnimationRegistryEvent event) {
@@ -92,10 +86,14 @@ public class UAAnimations {
         PHARAOH_IDLE_ACTIVE = new StaticAnimation(0.1f,true, "biped/living/pharaoh_idle_active", biped);
         PHARAOH_WALK_ACTIVE = new MovementAnimation(0.1f,true, "biped/living/pharaoh_walk_active", biped);
         PHARAOH_RUN_ACTIVE = new MovementAnimation(0.1f,true, "biped/living/pharaoh_run_active", biped);
-        PHARAOH_AUTO_1 = new BasicMultipleAttackAnimation(0.15F, 0.2F, 0.60F, 0.65F, null, biped.toolR, "biped/combat/pharaoh_auto_1", biped)
-                .addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
-                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
-                .addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 4)
-                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2F);
+        PHARAOH_AUTO1 = new BasicAttackAnimation(0.15F, "biped/combat/pharaoh_auto1", biped,
+                new Phase(0.3F, 0.4F, 1F, 0.5F, 0.45F, biped.toolL, null),
+                new Phase(0.3F, 0.4F, 1.05F, 0.55F, 0.45F, biped.toolL, null),
+                new Phase(0.3F, 0.4F, 1.1F, 0.6F, 0.45F, biped.toolL, null))
+                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
+                .addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 1)
+                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
     }
 }
