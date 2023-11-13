@@ -1,0 +1,44 @@
+{
+	"loader": "forge:separate_transforms",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "unchartedarsenal:models/item/pharaoh/pharaoh.obj",
+  		"flip-v": false,
+		"display":
+		{
+			"thirdperson_righthand":
+			{
+				"translation": [7.4, 5.75, 11.85],
+				"rotation": [180, 0, -90]
+			},
+			"firstperson_righthand":
+			{
+				"translation": [13,-6,-0],
+				"rotation": [75,0,0],
+				"scale": [0.7, 0.7, 0.7]
+			},
+			"ground":
+			{
+				"rotation": [40, -67, 0 ],
+				"translation": [0, 0, 5],
+				"scale": [0.5, 0.5, 0.5]
+			},
+			"gui":
+			{
+				"rotation": [ 77, -45, 90],
+				"translation": [-8, -3, 0],
+				"scale": [0.35, 0.35, 0.35]
+			},
+			"fixed":
+			{
+				"rotation": [90, 0, 90],
+				"translation": [-8.25, -16, 7.5]
+			}
+		}
+	},
+	"perspectives":
+	{
+
+	}
+}
