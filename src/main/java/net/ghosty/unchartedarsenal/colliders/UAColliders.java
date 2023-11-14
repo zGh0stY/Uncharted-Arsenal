@@ -5,5 +5,5 @@ import yesman.epicfight.api.collider.MultiOBBCollider;
 import yesman.epicfight.api.collider.OBBCollider;
 
 public class UAColliders {
-    public static final Collider PHARAOH_CURSE = new MultiOBBCollider(4, 0.5D, 0.5D, 2.5D, 0D, 0D, 0D);
+    public static final Collider PHARAOH_CURSE = new MultiOBBCollider(4, 0.7D, 0.7D, 0.5D, 0D, 0D, 0D);
 }

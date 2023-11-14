@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.Set;
 
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
+import net.ghosty.unchartedarsenal.colliders.UAColliders;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
@@ -86,14 +87,30 @@ public class UAAnimations {
         PHARAOH_IDLE_ACTIVE = new StaticAnimation(0.1f,true, "biped/living/pharaoh_idle_active", biped);
         PHARAOH_WALK_ACTIVE = new MovementAnimation(0.1f,true, "biped/living/pharaoh_walk_active", biped);
         PHARAOH_RUN_ACTIVE = new MovementAnimation(0.1f,true, "biped/living/pharaoh_run_active", biped);
+
+        PHARAOH_AUTO1 = new BasicMultipleAttackAnimation(0.1F, "biped/combat/pharaoh_auto1", biped,
+                new Phase(0F, 0.4F, 0.6F, 0.05F, Float.MAX_VALUE, biped.toolL, UAColliders.PHARAOH_CURSE))
+                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+                .addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(3))
+                .addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get())
+                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
+        /*
+        PHARAOH_AUTO1 = new BasicAttackAnimation(0.1F, 0.4F, 0.6F, 0.05F, UAColliders.PHARAOH_CURSE, biped.toolL, "biped/combat/pharaoh_auto1", biped)
+                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+                .addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(3))
+                .addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get())
+                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
+        */
+        /*
         PHARAOH_AUTO1 = new BasicAttackAnimation(0.15F, "biped/combat/pharaoh_auto1", biped,
-                new Phase(0.3F, 0.4F, 1F, 0.5F, 0.45F, biped.toolL, null),
-                new Phase(0.3F, 0.4F, 1.05F, 0.55F, 0.45F, biped.toolL, null),
-                new Phase(0.3F, 0.4F, 1.1F, 0.6F, 0.45F, biped.toolL, null))
+                new Phase(0.3F, 0.4F, 1F, 0.5F, 0.45F, biped.toolL, UAColliders.PHARAOH_CURSE),
+                new Phase(0.3F, 0.4F, 1.05F, 0.55F, 0.45F, biped.toolL, UAColliders.PHARAOH_CURSE),
+                new Phase(0.3F, 0.4F, 1.1F, 0.6F, 0.45F, biped.toolL, UAColliders.PHARAOH_CURSE))
                 .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
                 .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
                 .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
-                .addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 1)
-                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2.5F);
+                .addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 3)
+                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2F);
+        */
     }
 }
