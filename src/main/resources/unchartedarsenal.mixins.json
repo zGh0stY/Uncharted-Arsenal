@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "package": "net.ghosty.unchartedarsenal.mixin",
+  "client": [
+
+  ],
+  "mixins": [
+    "MixinAnimator",
+    "MixinLivingEntityPatch"
+  ],
+  "injector": {
+    "defaultRequire": 1
+  },
+  "refmap": "net.unchartedarsenal.mixins.refmap.json"
+}

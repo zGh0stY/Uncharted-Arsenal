@@ -5,15 +5,15 @@
   [
     {
       "livingmotion":"ALL",
-      "type":"root_upper_joints"
+      "type":"arms"
     },
     {
-      "livingmotion":"idle",
+      "livingmotion":"IDLE",
       "type":"none"
     },
     {
-      "livingmotion":"swim",
-      "type":"arms"
+      "livingmotion":"SWIM",
+      "type":"right_arms"
     }
   ]
 }
