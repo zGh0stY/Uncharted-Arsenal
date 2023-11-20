@@ -61,16 +61,19 @@ public class UAAnimations {
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.3F);
         PHARAOH_AUTO1 = new MultihitAttackAnimation(0.1F, 0.4F, 0.6F, 0.6F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_auto1", biped)
                 .addProperty(MultihitPhaseProperty.MULTI_HIT_RATE, ValueModifier.adder(1))
-                .addProperty(MultihitPhaseProperty.MULTI_MAX_HITS, ValueModifier.adder(1))
+                .addProperty(MultihitPhaseProperty.MULTI_MAX_HITS, ValueModifier.adder(2))
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
-        PHARAOH_AUTO2 = new BasicAttackAnimation(0.1F, 0.3F, 0.45F, 0.69F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_auto2", biped)
+        PHARAOH_AUTO2 = new MultihitAttackAnimation(0.1F, 0.3F, 0.45F, 0.69F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_auto2", biped)
+                .addProperty(MultihitPhaseProperty.MULTI_HIT_RATE, ValueModifier.adder(1))
+                .addProperty(MultihitPhaseProperty.MULTI_MAX_HITS, ValueModifier.adder(2))
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
-        PHARAOH_AUTO3 = new BasicAttackAnimation(0.1F, "biped/combat/pharaoh_auto3", biped,
+        PHARAOH_AUTO3 = new MultihitAttackAnimation(0.1F, "biped/combat/pharaoh_auto3", biped,
                 new Phase(0F, 0.5F, 0.65F, 0.6F, 0.6F, biped.toolR, UAColliders.PHARAOH_CURSE),
                 new Phase(0.6F, 0.4F, 0.9F, 1.4F, 1.4F, biped.rootJoint, UAColliders.PHARAOH_CRASH))
-                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-                .addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(3))
-                .addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get())
+                .addProperty(MultihitPhaseProperty.MULTI_HIT_RATE, ValueModifier.adder(1))
+                .addProperty(MultihitPhaseProperty.MULTI_MAX_HITS, ValueModifier.adder(2))
+                .addProperty(MultihitPhaseProperty.MULTI_HIT_RATE, ValueModifier.adder(1), 1)
+                .addProperty(MultihitPhaseProperty.MULTI_MAX_HITS, ValueModifier.adder(2), 1)
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
                 .addEvents(
                         TimeStampedEvent.create(0.55F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),

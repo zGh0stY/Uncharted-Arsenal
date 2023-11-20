@@ -4,6 +4,8 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
 import net.ghosty.unchartedarsenal.api.animation.property.MultihitPhaseProperty;
 import net.ghosty.unchartedarsenal.world.capabilities.entitypatch.IMixinLivingEntityPatch;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.entity.PartEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
@@ -27,6 +30,7 @@ import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.TypeFlexibleHashMap.TypeKey;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+import yesman.epicfight.world.capabilities.entitypatch.MobPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
@@ -38,7 +42,7 @@ public class MultihitAttackAnimation extends BasicAttackAnimation {
     /** Amount of times hurt entities got hit **/
     public static final TypeKey<Map<LivingEntity, Integer>> HIT_COUNTS = new TypeKey<>() {
         public Map<LivingEntity, Integer> defaultValue() {
-            return new HashMap<>();
+            return Maps.newHashMap();
         }
     };
 
@@ -68,6 +72,38 @@ public class MultihitAttackAnimation extends BasicAttackAnimation {
     }
 
     @Override
+    protected void attackTick(LivingEntityPatch<?> entitypatch) {
+        AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(this);
+        float elapsedTime = player.getElapsedTime();
+        float prevElapsedTime = player.getPrevElapsedTime();
+        EntityState state = this.getState(entitypatch, elapsedTime);
+        EntityState prevState = this.getState(entitypatch, prevElapsedTime);
+        Phase phase = this.getPhaseByTime(elapsedTime);
+
+        if (state.getLevel() == 1 && !state.turningLocked()) {
+            if (entitypatch instanceof MobPatch<?> mobpatch) {
+                mobpatch.getOriginal().getNavigation().stop();
+                entitypatch.getOriginal().attackAnim = 2;
+                LivingEntity target = entitypatch.getTarget();
+
+                if (target != null) {
+                    entitypatch.rotateTo(target, entitypatch.getYRotLimit(), false);
+                }
+            }
+        }
+
+        if (prevState.attacking() || state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)) {
+            if (!prevState.attacking() || (phase != this.getPhaseByTime(prevElapsedTime) && (state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)))) {
+                entitypatch.playSound(this.getSwingSound(entitypatch, phase), 0.0F, 0.0F);
+                entitypatch.removeHurtEntities();
+                ((IMixinLivingEntityPatch)entitypatch).clearEntityHitCount();
+            }
+
+            this.hurtCollidingEntities(entitypatch, prevElapsedTime, elapsedTime, prevState, state, phase);
+        }
+    }
+
+    @Override
     protected void hurtCollidingEntities(LivingEntityPatch<?> entitypatch, float prevElapsedTime, float elapsedTime, EntityState prevState, EntityState state, Phase phase) {
         LivingEntity entity = entitypatch.getOriginal();
         entitypatch.getArmature().initializeTransform();
@@ -79,17 +115,16 @@ public class MultihitAttackAnimation extends BasicAttackAnimation {
             HitEntityList hitEntities = new HitEntityList(entitypatch, list, phase.getProperty(AttackPhaseProperty.HIT_PRIORITY).orElse(HitEntityList.Priority.DISTANCE));
             int maxStrikes = this.getMaxStrikes(entitypatch, phase);
 
-            LOGGER.debug(this.getMultiMaxHits(entitypatch, phase));
-            LOGGER.debug(this.getMultiHitRate(entitypatch, phase));
-            LOGGER.debug(((IMixinLivingEntityPatch)entitypatch).getEntityHitCount(entity));
-
             while (entitypatch.getCurrenltyHurtEntities().size() < maxStrikes && hitEntities.next()) {
                 Entity hitten = hitEntities.getEntity();
                 LivingEntity trueEntity = this.getTrueEntity(hitten);
 
-                if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(trueEntity) && !entitypatch.isTeammate(hitten)) {
+                if (trueEntity != null && trueEntity.isAlive() && ((IMixinLivingEntityPatch)entitypatch).getEntityHitCount(trueEntity) < this.getMultiMaxHits(entitypatch, phase) && !entitypatch.isTeammate(hitten)) {
                     if (hitten instanceof LivingEntity || hitten instanceof PartEntity) {
                         if (entity.hasLineOfSight(hitten)) {
+                            ((IMixinLivingEntityPatch)entitypatch).recordEntityHit(trueEntity);
+                            LOGGER.debug(((IMixinLivingEntityPatch)entitypatch).getEntityHitCount(trueEntity));
+
                             EpicFightDamageSource source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
                             int prevInvulTime = hitten.invulnerableTime;
                             hitten.invulnerableTime = 0;
