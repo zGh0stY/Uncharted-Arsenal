@@ -37,7 +37,6 @@ import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class MultihitAttackAnimation extends BasicAttackAnimation {
-    Logger LOGGER = LogManager.getLogger(UnchartedArsenal.MOD_ID);
 
     /** Amount of times hurt entities got hit **/
     public static final TypeKey<Map<LivingEntity, Integer>> HIT_COUNTS = new TypeKey<>() {
@@ -123,7 +122,6 @@ public class MultihitAttackAnimation extends BasicAttackAnimation {
                     if (hitten instanceof LivingEntity || hitten instanceof PartEntity) {
                         if (entity.hasLineOfSight(hitten)) {
                             ((IMixinLivingEntityPatch)entitypatch).recordEntityHit(trueEntity);
-                            LOGGER.debug(((IMixinLivingEntityPatch)entitypatch).getEntityHitCount(trueEntity));
 
                             EpicFightDamageSource source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
                             int prevInvulTime = hitten.invulnerableTime;

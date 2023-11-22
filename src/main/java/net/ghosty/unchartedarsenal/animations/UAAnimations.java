@@ -25,6 +25,7 @@ import yesman.epicfight.world.damagesource.StunType;
 
 @Mod.EventBusSubscriber(modid = UnchartedArsenal.MOD_ID , bus = EventBusSubscriber.Bus.MOD)
 public class UAAnimations {
+    public static StaticAnimation PHARAOH_IDLE_SWITCH;
     public static StaticAnimation PHARAOH_IDLE;
     public static StaticAnimation PHARAOH_WALK;
     public static StaticAnimation PHARAOH_RUN;
@@ -52,6 +53,7 @@ public class UAAnimations {
         PHARAOH_IDLE_ACTIVE = new StaticAnimation(true, "biped/living/pharaoh_idle_active", biped);
         PHARAOH_WALK_ACTIVE = new MovementAnimation(true, "biped/living/pharaoh_walk_active", biped);
         PHARAOH_RUN_ACTIVE = new MovementAnimation(true, "biped/living/pharaoh_run_active", biped);
+        PHARAOH_IDLE_SWITCH = new StaticAnimation(true, "biped/living/pharaoh_idle_switch", biped);
 
         PHARAOH_AIR = new AirSlashAnimation(0.1F, 0.3F, 0.41F, 1F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_air", biped)
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
