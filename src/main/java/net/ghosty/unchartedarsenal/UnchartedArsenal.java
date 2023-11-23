@@ -1,6 +1,7 @@
 package net.ghosty.unchartedarsenal;
 
 import com.mojang.logging.LogUtils;
+import net.ghosty.unchartedarsenal.particle.UAParticles;
 import net.ghosty.unchartedarsenal.skill.UASkills;
 import net.ghosty.unchartedarsenal.world.item.UACreativeTabs;
 import net.ghosty.unchartedarsenal.world.item.UAItems;
@@ -27,6 +28,7 @@ public class UnchartedArsenal {
 
         UAItems.ITEMS.register(bus);
         UACreativeTabs.TABS.register(bus);
+        UAParticles.PARTICLES.register(bus);
         UASkills.registerSkills();
 
         MinecraftForge.EVENT_BUS.register(this);

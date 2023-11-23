@@ -4,9 +4,24 @@ import net.ghosty.unchartedarsenal.UnchartedArsenal;
 import net.ghosty.unchartedarsenal.api.animation.property.MultihitPhaseProperty;
 import net.ghosty.unchartedarsenal.api.animation.types.MultihitAttackAnimation;
 import net.ghosty.unchartedarsenal.colliders.UAColliders;
+import net.ghosty.unchartedarsenal.particle.UAParticles;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import yesman.epicfight.api.animation.Joint;
+import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationEvent.Side;
 import yesman.epicfight.api.animation.property.AnimationEvent.TimeStampedEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
@@ -15,12 +30,15 @@ import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProp
 import yesman.epicfight.api.animation.types.*;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
+import yesman.epicfight.api.utils.LevelUtil;
+import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.model.armature.HumanoidArmature;
+import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.damagesource.StunType;
 
 @Mod.EventBusSubscriber(modid = UnchartedArsenal.MOD_ID , bus = EventBusSubscriber.Bus.MOD)
@@ -80,25 +98,45 @@ public class UAAnimations {
                 .addEvents(
                         TimeStampedEvent.create(0.55F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
                         TimeStampedEvent.create(0.65F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
-                        TimeStampedEvent.create(0.75F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(-1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F)
+                        TimeStampedEvent.create(0.75F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(-1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
+                        TimeStampedEvent.create(0.55F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
+                        TimeStampedEvent.create(0.65F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
+                        TimeStampedEvent.create(0.75F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(-1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
+                        TimeStampedEvent.create(0.55F, Animations.ReusableSources.PLAY_SOUND, Side.CLIENT).params(SoundEvents.BLAZE_SHOOT),
+                        TimeStampedEvent.create(0.65F, Animations.ReusableSources.PLAY_SOUND, Side.CLIENT).params(SoundEvents.BLAZE_SHOOT),
+                        TimeStampedEvent.create(0.75F, Animations.ReusableSources.PLAY_SOUND, Side.CLIENT).params(SoundEvents.BLAZE_SHOOT)
                 );
-        /*
-        PHARAOH_AUTO1 = new BasicAttackAnimation(0.1F, 0.4F, 0.6F, 0.05F, UAColliders.PHARAOH_CURSE, biped.toolL, "biped/combat/pharaoh_auto1", biped)
-                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-                .addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(3))
-                .addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get())
-                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
-        */
-        /*
-        PHARAOH_AUTO1 = new BasicAttackAnimation(0.15F, "biped/combat/pharaoh_auto1", biped,
-                new Phase(0.3F, 0.4F, 1F, 0.5F, 0.45F, biped.toolL, UAColliders.PHARAOH_CURSE),
-                new Phase(0.3F, 0.4F, 1.05F, 0.55F, 0.45F, biped.toolL, UAColliders.PHARAOH_CURSE),
-                new Phase(0.3F, 0.4F, 1.1F, 0.6F, 0.45F, biped.toolL, UAColliders.PHARAOH_CURSE))
-                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
-                .addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
-                .addProperty(AttackAnimationProperty.EXTRA_COLLIDERS, 3)
-                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 2F);
-        */
+    }
+
+    public static class ReusableSources {
+        public static final AnimationEvent.AnimationEventConsumer FIRE_GEYSER = (entitypatch, animation, params) -> {
+            Vec3 position = entitypatch.getOriginal().position();
+            position = new Vec3(position.x, position.y + 4.5, position.z);
+            OpenMatrix4f modelTransform = entitypatch.getArmature().getBindedTransformFor(animation.getPoseByTime(entitypatch, (float)params[3], 1.0F), (Joint)params[1])
+                    .mulFront(
+                            OpenMatrix4f.createTranslation((float)position.x, (float)position.y, (float)position.z)
+                                    .mulBack(OpenMatrix4f.createRotatorDeg(180.0F, Vec3f.Y_AXIS)
+                                            .mulBack(entitypatch.getModelMatrix(1.0F))));
+
+            Level level = entitypatch.getOriginal().level();
+            Vec3 weaponEdge = OpenMatrix4f.transform(modelTransform, ((Vec3f)params[0]).toDoubleVector());
+            Vec3 gyserPos;
+            BlockHitResult hitResult = level.clip(new ClipContext(position.add(0.0D, 0.1D, 0.0D), weaponEdge, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entitypatch.getOriginal()));
+
+            if (hitResult.getType() == HitResult.Type.BLOCK) {
+                Direction direction = hitResult.getDirection();
+                BlockPos collidePos = hitResult.getBlockPos().offset(direction.getStepX(), direction.getStepY(), direction.getStepZ());
+
+                if (!LevelUtil.canTransferShockWave(level, collidePos, level.getBlockState(collidePos))) {
+                    collidePos = collidePos.below();
+                }
+
+                gyserPos = new Vec3(collidePos.getX(), collidePos.getY(), collidePos.getZ());
+            } else {
+                gyserPos = weaponEdge.subtract(0.0D, 1.0D, 0.0D);
+            }
+
+            level.addParticle(UAParticles.FIRE_GEYSER_START.get(), true, gyserPos.x, gyserPos.y, gyserPos.z,0, 0, 0);
+        };
     }
 }
