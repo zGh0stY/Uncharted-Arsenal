@@ -1,19 +1,13 @@
-package net.ghosty.unchartedarsenal.animations;
+package net.ghosty.unchartedarsenal.gameasset;
 
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
 import net.ghosty.unchartedarsenal.api.animation.property.MultihitPhaseProperty;
 import net.ghosty.unchartedarsenal.api.animation.types.MultihitAttackAnimation;
 import net.ghosty.unchartedarsenal.colliders.UAColliders;
-import net.ghosty.unchartedarsenal.particle.UAParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +20,6 @@ import yesman.epicfight.api.animation.property.AnimationEvent.Side;
 import yesman.epicfight.api.animation.property.AnimationEvent.TimeStampedEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
-import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.animation.types.*;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
@@ -36,10 +29,7 @@ import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
-import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.model.armature.HumanoidArmature;
-import yesman.epicfight.particle.EpicFightParticles;
-import yesman.epicfight.world.damagesource.StunType;
 
 @Mod.EventBusSubscriber(modid = UnchartedArsenal.MOD_ID , bus = EventBusSubscriber.Bus.MOD)
 public class UAAnimations {
@@ -55,6 +45,11 @@ public class UAAnimations {
     public static StaticAnimation PHARAOH_AUTO3;
     public static StaticAnimation PHARAOH_DASH;
     public static StaticAnimation PHARAOH_AIR;
+    public static StaticAnimation CALIBURN_IDLE;
+    public static StaticAnimation CALIBURN_WALK;
+    public static StaticAnimation CALIBURN_RUN;
+    public static StaticAnimation CALIBURN_AUTO1;
+
 
     @SubscribeEvent
     public static void registerAnimations(AnimationRegistryEvent event) {
@@ -64,19 +59,22 @@ public class UAAnimations {
     private static void build() {
         HumanoidArmature biped = Armatures.BIPED;
 
-        // --- PHARAOH'S CURSE
+        // --- PHARAOH'S CURSE -----------------------------------------------------------------------------------------
         PHARAOH_IDLE = new StaticAnimation(true, "biped/living/pharaoh_idle", biped);
         PHARAOH_WALK = new MovementAnimation(true, "biped/living/pharaoh_walk", biped);
         PHARAOH_RUN = new MovementAnimation(true, "biped/living/pharaoh_run", biped);
         PHARAOH_IDLE_ACTIVE = new StaticAnimation(true, "biped/living/pharaoh_idle_active", biped);
         PHARAOH_WALK_ACTIVE = new MovementAnimation(true, "biped/living/pharaoh_walk_active", biped);
         PHARAOH_RUN_ACTIVE = new MovementAnimation(true, "biped/living/pharaoh_run_active", biped);
-        PHARAOH_IDLE_SWITCH = new StaticAnimation(true, "biped/living/pharaoh_idle_switch", biped);
+        PHARAOH_IDLE_SWITCH = new MovementAnimation(false, "biped/living/pharaoh_idle_switch", biped);
 
         PHARAOH_AIR = new AirSlashAnimation(0.1F, 0.3F, 0.41F, 1F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_air", biped)
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F)
                 .addProperty(ActionAnimationProperty.MOVE_VERTICAL, false)
-                .addEvents(TimeStampedEvent.create(0.35F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F));
+                .addEvents(
+                        TimeStampedEvent.create(0.35F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
+                        TimeStampedEvent.create(0.35F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F)
+                );
         PHARAOH_DASH = new DashAttackAnimation(0.25F, 0.25F, 0.3F, 0.7F, 1.3F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_dash", biped)
                 .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.3F);
         PHARAOH_AUTO1 = new MultihitAttackAnimation(0.1F, 0.4F, 0.6F, 0.6F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/pharaoh_auto1", biped)
@@ -101,11 +99,15 @@ public class UAAnimations {
                         TimeStampedEvent.create(0.75F, Animations.ReusableSources.FRACTURE_GROUND_SIMPLE, Side.CLIENT).params(new Vec3f(-1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
                         TimeStampedEvent.create(0.55F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(0F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
                         TimeStampedEvent.create(0.65F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
-                        TimeStampedEvent.create(0.75F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(-1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F),
-                        TimeStampedEvent.create(0.55F, Animations.ReusableSources.PLAY_SOUND, Side.CLIENT).params(SoundEvents.BLAZE_SHOOT),
-                        TimeStampedEvent.create(0.65F, Animations.ReusableSources.PLAY_SOUND, Side.CLIENT).params(SoundEvents.BLAZE_SHOOT),
-                        TimeStampedEvent.create(0.75F, Animations.ReusableSources.PLAY_SOUND, Side.CLIENT).params(SoundEvents.BLAZE_SHOOT)
+                        TimeStampedEvent.create(0.75F, UAAnimations.ReusableSources.FIRE_GEYSER, Side.CLIENT).params(new Vec3f(-1F, 0F, -3F), Armatures.BIPED.rootJoint, 1.1D, 0.55F)
                 );
+
+        // --- CALIBURN & CLARENT --------------------------------------------------------------------------------------
+        CALIBURN_IDLE = new StaticAnimation(true, "biped/living/caliburn_idle", biped);
+        CALIBURN_WALK = new MovementAnimation(true, "biped/living/caliburn_walk", biped);
+        CALIBURN_RUN = new MovementAnimation(true, "biped/living/caliburn_run", biped);
+        CALIBURN_AUTO1 = new BasicAttackAnimation(0.1F, 0.4F, 0.6F, 0.6F, UAColliders.PHARAOH_CURSE, biped.toolR, "biped/combat/caliburn_auto1", biped)
+                .addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1F);
     }
 
     public static class ReusableSources {

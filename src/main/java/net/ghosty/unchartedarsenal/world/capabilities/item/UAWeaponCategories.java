@@ -3,7 +3,7 @@ package net.ghosty.unchartedarsenal.world.capabilities.item;
 import yesman.epicfight.world.capabilities.item.WeaponCategory;
 
 public enum UAWeaponCategories implements WeaponCategory {
-    PHARAOH_CURSE;
+    PHARAOH_CURSE, CALIBURN;
 
     final int id;
 

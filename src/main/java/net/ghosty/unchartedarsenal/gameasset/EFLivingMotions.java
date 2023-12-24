@@ -1,4 +1,4 @@
-package net.ghosty.unchartedarsenal.animations;
+package net.ghosty.unchartedarsenal.gameasset;
 
 import yesman.epicfight.api.animation.LivingMotion;
 

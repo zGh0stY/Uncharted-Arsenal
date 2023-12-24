@@ -1,15 +1,18 @@
 package net.ghosty.unchartedarsenal.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.ghosty.unchartedarsenal.gameasset.UAParticles;
+import net.ghosty.unchartedarsenal.gameasset.UASounds;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -18,7 +21,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.particle.EpicFightParticles;
+import yesman.epicfight.client.particle.GroundSlamParticle;
 
 import java.util.Random;
 
@@ -29,7 +32,7 @@ public class FireGeyserStartParticle extends TextureSheetParticle {
     protected FireGeyserStartParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteset, double dX, double dY, double dZ) {
         super(pLevel, pX, pY, pZ, dX, dY, dZ);
 
-        this.friction = 0;
+        this.friction = 0.0F;
         this.xd = dX;
         this.yd = dY;
         this.zd = dZ;
@@ -41,6 +44,8 @@ public class FireGeyserStartParticle extends TextureSheetParticle {
         this.rCol = 1f;
         this.gCol = 1f;
         this.bCol = 1f;
+
+        level.playLocalSound(pX, pY, pZ, SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 1.0F, (float)(random.nextDouble() * 0.5F) + 0.75F, false);
     }
 
     @Override
@@ -95,34 +100,20 @@ public class FireGeyserStartParticle extends TextureSheetParticle {
         }
 
         if (age == 1) {
-            int n = 5; // set the number of particles to emit
-            double r = 0.6; // set the radius of the disk to 1
-            double t = 0.01; // set the thickness of the disk to 0.1
+            int n = 20;
 
             for (int i = 0; i < n; i++) {
-                double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
-                double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+                float speedx = (float)(random.nextDouble() * 0.5f) - 0.25f;
+                float speedy = (float)(random.nextDouble() * 1f);
+                float speedz = (float)(random.nextDouble() * 0.5f) - 0.25f;
 
-                // calculate the emission direction in Cartesian coordinates using the polar coordinates
-                double x = r * Math.cos(phi) * Math.cos(theta);
-                double y = r * Math.cos(phi) * Math.sin(theta);
-                double z = 0;
-
-                // create a Vector3f object to represent the emission direction
-                Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
-
-                // rotate the direction vector to align with the forward vector
-                OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(80), new Vec3f(1, 0, 0));
-                OpenMatrix4f.transform3v(rotation, direction, direction);
-
-                // emit the particle in the calculated direction, with some random velocity added
                 this.level.addParticle(UAParticles.FALLING_FLAME.get(),
                         (this.x),
-                        (this.y),
+                        (this.y - 4),
                         (this.z),
-                        (float)(direction.x),
-                        (float)(direction.y),
-                        (float)(direction.z));
+                        speedx,
+                        speedy,
+                        speedz);
             }
         }
     }

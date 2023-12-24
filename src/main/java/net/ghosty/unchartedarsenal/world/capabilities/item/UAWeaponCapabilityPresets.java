@@ -3,18 +3,24 @@ package net.ghosty.unchartedarsenal.world.capabilities.item;
 import java.util.function.Function;
 
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
-import net.ghosty.unchartedarsenal.animations.UAAnimations;
+import net.ghosty.unchartedarsenal.gameasset.UAAnimations;
 import net.ghosty.unchartedarsenal.colliders.UAColliders;
-import net.ghosty.unchartedarsenal.skill.UASkills;
+import net.ghosty.unchartedarsenal.gameasset.UASkills;
 import net.ghosty.unchartedarsenal.skill.weaponinnate.SunsWrathSkill;
+import net.ghosty.unchartedarsenal.world.item.UAItems;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Interaction;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.skill.SkillSlots;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
@@ -69,8 +75,34 @@ public class UAWeaponCapabilityPresets {
         return builder;
     };
 
+    public static final Function<Item, CapabilityItem.Builder> CALIBURN = (item) -> {
+        CapabilityItem.Builder builder = WeaponCapability.builder()
+                .category(UAWeaponCategories.PHARAOH_CURSE)
+                .styleProvider((entitypatch) -> {
+                    if(entitypatch.getOriginal().getItemInHand(InteractionHand.OFF_HAND).is(UAItems.CLARENT.get())) {
+                        return Styles.OCHS;
+                    }
+                    else if (entitypatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == CapabilityItem.WeaponCategories.SWORD) {
+                        return Styles.TWO_HAND;
+                    }
+                    return Styles.ONE_HAND;
+                })
+                .hitSound(EpicFightSounds.BLADE_HIT.get())
+                .newStyleCombo(Styles.ONE_HAND, Animations.SWORD_AUTO1, Animations.SWORD_AUTO2, Animations.SWORD_AUTO3, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
+                .newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
+                .newStyleCombo(Styles.OCHS, UAAnimations.CALIBURN_AUTO1)
+                .livingMotionModifier(Styles.OCHS, LivingMotions.IDLE, UAAnimations.CALIBURN_IDLE)
+                .livingMotionModifier(Styles.OCHS, LivingMotions.WALK, UAAnimations.CALIBURN_WALK)
+                .livingMotionModifier(Styles.OCHS, LivingMotions.RUN, UAAnimations.CALIBURN_RUN)
+                .weaponCombinationPredicator((entitypatch) -> {
+                    return EpicFightCapabilities.getItemStackCapability(entitypatch.getOriginal().getOffhandItem()).getWeaponCategory() == CapabilityItem.WeaponCategories.SWORD || entitypatch.getOriginal().getItemInHand(InteractionHand.OFF_HAND).is(UAItems.CLARENT.get());
+                });
+        return builder;
+    };
+
     @SubscribeEvent
     public static void register(WeaponCapabilityPresetRegistryEvent event) {
         event.getTypeEntry().put("pharaoh", PHARAOH_CURSE);
+        event.getTypeEntry().put("caliburn", CALIBURN);
     }
 }

@@ -3,7 +3,7 @@ package net.ghosty.unchartedarsenal.skill.weaponpassive;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.ghosty.unchartedarsenal.skill.UASkills;
+import net.ghosty.unchartedarsenal.gameasset.UASkills;
 import net.ghosty.unchartedarsenal.skill.weaponinnate.SunsWrathSkill;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;

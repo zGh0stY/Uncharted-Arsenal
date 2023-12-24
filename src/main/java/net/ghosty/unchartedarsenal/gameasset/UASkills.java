@@ -1,4 +1,4 @@
-package net.ghosty.unchartedarsenal.skill;
+package net.ghosty.unchartedarsenal.gameasset;
 
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
 import net.ghosty.unchartedarsenal.skill.weaponinnate.SunsWrathSkill;

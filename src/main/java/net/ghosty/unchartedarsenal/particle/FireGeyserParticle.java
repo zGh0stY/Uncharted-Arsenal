@@ -1,30 +1,23 @@
 package net.ghosty.unchartedarsenal.particle;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.ghosty.unchartedarsenal.gameasset.UAParticles;
+import net.ghosty.unchartedarsenal.gameasset.UASounds;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.textures.TextureAtlasSpriteLoaderManager;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import yesman.epicfight.api.client.model.AnimatedMesh;
-import yesman.epicfight.api.client.model.Mesh;
-import yesman.epicfight.api.client.model.Meshes;
-import yesman.epicfight.client.particle.CustomModelParticle;
-import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
-import yesman.epicfight.client.particle.HitParticle;
-import yesman.epicfight.client.particle.TexturedCustomModelParticle;
-
-import javax.swing.plaf.IconUIResource;
 
 @OnlyIn(Dist.CLIENT)
 public class FireGeyserParticle extends TextureSheetParticle {
@@ -38,7 +31,7 @@ public class FireGeyserParticle extends TextureSheetParticle {
         this.xd = dX;
         this.yd = dY;
         this.zd = dZ;
-        this.lifetime = 30;
+        this.lifetime = 40;
         this.quadSize = 4.0F;
         this.setSpriteFromAge(spriteset);
         sprites = spriteset;
@@ -46,6 +39,8 @@ public class FireGeyserParticle extends TextureSheetParticle {
         this.rCol = 1f;
         this.gCol = 1f;
         this.bCol = 1f;
+
+        level.playLocalSound(pX, pY, pZ, UASounds.FIRE_GEYSER.get(), SoundSource.PLAYERS, 1.0F, (float)(random.nextDouble() * 0.5F) + 0.75F, false);
     }
 
     @Override

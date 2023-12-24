@@ -1,4 +1,4 @@
-package net.ghosty.unchartedarsenal.particle;
+package net.ghosty.unchartedarsenal.gameasset;
 
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
 import net.minecraft.core.particles.ParticleType;

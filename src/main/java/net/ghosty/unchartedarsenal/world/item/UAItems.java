@@ -10,6 +10,8 @@ import net.minecraftforge.registries.RegistryObject;
 public class UAItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, UnchartedArsenal.MOD_ID);
 
-    public static final RegistryObject<Item> PHARAOH_CURSE = ITEMS.register("pharaoh", () -> new PharaohCurseItem(new Item.Properties().rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> PHARAOH_CURSE = ITEMS.register("pharaoh", () -> new PharaohCurseItem(new Item.Properties().rarity(Rarity.EPIC)));
     public static final RegistryObject<Item> PHARAOH_WHEEL = ITEMS.register("pharaoh_wheel", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> CLARENT = ITEMS.register("clarent", () -> new ClarentItem(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> CALIBURN = ITEMS.register("caliburn", () -> new CaliburnItem(new Item.Properties().rarity(Rarity.EPIC)));
 }

@@ -19,8 +19,6 @@ public class UACreativeTabs {
                     .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
                     .displayItems((params, output) -> {
                         UAItems.ITEMS.getEntries().forEach(it -> {
-                            // FIXME: bad implement, maybe based protocol better yet.
-                            // ignore UCHIGATANA_SHEATH
                             output.accept(it.get());
                         });
                     })

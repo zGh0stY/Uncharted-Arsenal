@@ -5,12 +5,34 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.particles.SimpleParticleType;
 
-public class FallingFlameParticle extends RisingParticle {
-    FallingFlameParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-        super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
+public class FallingFlameParticle extends TextureSheetParticle {
+    private final SpriteSet sprites;
 
-        this.gravity = 2f;
-        this.scale(0.5f);
+    FallingFlameParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteset, double dX, double dY, double dZ) {
+        super(pLevel, pX, pY, pZ, dX, dY, dZ);
+
+        this.gravity = 0.75F;
+        this.friction = 0.999F;
+        this.xd = dX;
+        this.yd = dY;
+        this.zd = dZ;
+        this.lifetime = 30;
+        this.quadSize = 1.0F;
+        this.setSpriteFromAge(spriteset);
+        sprites = spriteset;
+
+        this.rCol = 1F;
+        this.gCol = 1F;
+        this.bCol = 1F;
+
+        this.quadSize = 0.1F;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        this.alpha = (-(1 / (float) lifetime) * age + 1);
     }
 
     @Override
@@ -23,12 +45,6 @@ public class FallingFlameParticle extends RisingParticle {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
-    @Override
-    public float getQuadSize(float pScaleFactor) {
-        float f = ((float)this.age + pScaleFactor) / (float)this.lifetime;
-        return this.quadSize * (1.0F - f * f * 0.5F);
-    }
-
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -39,7 +55,7 @@ public class FallingFlameParticle extends RisingParticle {
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
                                        double dx, double dy, double dz) {
-            return new FireGeyserStartParticle(level, x, y, z, this.sprites, dx, dy, dz);
+            return new FallingFlameParticle(level, x, y, z, this.sprites, dx, dy, dz);
         }
     }
 }

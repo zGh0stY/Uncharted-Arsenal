@@ -1,0 +1,8 @@
+{
+  "sfx.fire_geyser":
+  {
+    "category":"master",
+    "subtitle":"sfx.fire_geyser",
+    "sounds":[{"name":"unchartedarsenal:sfx/fire_geyser", "stream":true, "attenuation_distance":50}]
+  }
+}

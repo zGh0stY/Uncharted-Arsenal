@@ -1,0 +1,57 @@
+{
+	"loader": "forge:separate_transforms",
+	"base":
+	{
+		"loader": "forge:obj",
+  		"model": "unchartedarsenal:models/item/caliburn/caliburn.obj",
+  		"flip-v": false,
+		"display":
+		{
+			"thirdperson_righthand":
+			{
+				"translation": [8, 6, 10],
+				"rotation": [0, 0, 0],
+				"scale": [1, 1, 1]
+			},
+			"firstperson_righthand":
+			{
+				"translation": [13,-6,-0],
+				"rotation": [0,0,0],
+				"scale": [1, 1, 1]
+			},
+			"thirdperson_lefthand":
+			{
+				"translation": [-8, 6, 10],
+				"rotation": [0, 0, 0],
+				"scale": [1, 1, 1]
+			},
+			"firstperson_lefthand":
+			{
+				"translation": [13,-6,-0],
+				"rotation": [0,0,0],
+				"scale": [1, 1, 1]
+			},
+			"ground":
+			{
+				"rotation": [40, -67, 0 ],
+				"translation": [-6, 0, 6],
+				"scale": [0.5, 0.5, 0.5]
+			},
+			"gui":
+			{
+				"rotation": [ 77, -45, 90],
+				"translation": [-10, -2.5, 0],
+				"scale": [0.6, 0.6, 0.6]
+			},
+			"fixed":
+			{
+				"rotation": [90, 0, 90],
+				"translation": [-8.25, -16, 7.5]
+			}
+		}
+	},
+	"perspectives":
+	{
+
+	}
+}

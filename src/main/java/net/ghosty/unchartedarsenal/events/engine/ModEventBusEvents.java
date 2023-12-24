@@ -1,6 +1,7 @@
 package net.ghosty.unchartedarsenal.events.engine;
 
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
+import net.ghosty.unchartedarsenal.gameasset.UAParticles;
 import net.ghosty.unchartedarsenal.particle.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;

@@ -3,49 +3,22 @@ package net.ghosty.unchartedarsenal.skill.weaponinnate;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.collect.Lists;
-
 import net.ghosty.unchartedarsenal.UnchartedArsenal;
-import net.ghosty.unchartedarsenal.animations.UAAnimations;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.nbt.CompoundTag;
+import net.ghosty.unchartedarsenal.gameasset.UAAnimations;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import yesman.epicfight.api.utils.AttackResult;
-import yesman.epicfight.client.ClientEngine;
-import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.gameasset.Animations;
-import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.network.EpicFightNetworkManager;
-import yesman.epicfight.network.server.SPPlayAnimation;
-import yesman.epicfight.particle.EpicFightParticles;
-import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
-import yesman.epicfight.world.capabilities.EpicFightCapabilities;
-import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class SunsWrathSkill extends WeaponInnateSkill {
@@ -114,6 +87,7 @@ public class SunsWrathSkill extends WeaponInnateSkill {
                 if (container.getDataManager().getDataValue(STANCE) == 1) {
                     container.getDataManager().setDataSync(STANCE, 0, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 
+                    executer.playAnimationSynchronized(UAAnimations.PHARAOH_IDLE_SWITCH, 0.1F);
                     executer.modifyLivingMotionByCurrentItem();
                     executer.playSound(SoundEvents.FIRE_EXTINGUISH, 0.0F, 0.0F);
                 }
